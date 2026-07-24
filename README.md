@@ -1,5 +1,9 @@
 # OrganLink: Real-Time Transplant Coordination Network
 
+[![Deploy to GitHub Pages](https://github.com/Trivikram-The-Techie/OrganLink/actions/workflows/deploy.yml/badge.svg)](https://github.com/Trivikram-The-Techie/OrganLink/actions/workflows/deploy.yml)
+
+**Live Demo**: [https://trivikram-the-techie.github.io/OrganLink/](https://trivikram-the-techie.github.io/OrganLink/)
+
 OrganLink is a real-time coordination dashboard built for medical facilities to locate compatible organ recipients, evaluate transit times, dispatch transport teams, and complete mutual contact authorization gates. 
 
 This project was built as a hackathon prototype, featuring a hybrid database engine: it functions **out-of-the-box in simulated offline mode** (using reactive multi-tab LocalStorage synchronization) or scales instantly to **production Firebase Auth and Firestore** by supplying environment variables.
