@@ -582,6 +582,7 @@ export default function App() {
     const pct = item.timeRemaining / item.viabilityLimit;
     if (pct < 0.15) return 'Critical';
     if (pct < 0.40) return 'High';
+    if (item.urgencyLevel) return item.urgencyLevel;
     return 'Stable';
   };
 
@@ -677,7 +678,8 @@ export default function App() {
         attendingPhysician: "Dr. A. Nair",
         preservationMethod: "Cold ischemia — static cold storage",
         organId: `ORG-${Math.floor(100 + Math.random() * 900)}-${requestForm.organType[0]}`,
-        retrievalTime: "Retrieved Just Now"
+        retrievalTime: "Retrieved Just Now",
+        urgencyLevel: requestForm.urgencyLevel
       };
 
       setCoordinations(prev => [newCoord, ...prev]);
