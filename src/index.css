@@ -1427,4 +1427,18 @@ body {
   50% { transform: translateY(-4px); }
 }
 
+/* History Table Styling */
+.history-table-row:hover {
+  background-color: var(--bg-light) !important;
+}
+
+.btn-tab:hover {
+  color: var(--primary-blue) !important;
+  background-color: rgba(11, 79, 130, 0.05) !important;
+}
+
+.btn-tab.active:hover {
+  background-color: var(--primary-blue-light) !important;
+}
+
 

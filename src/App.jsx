@@ -89,7 +89,7 @@ const HOSPITAL_COORDINATES = {
 };
 
 // Initial mock data of 18 records with detailed parameters
-const INITIAL_COORDINATIONS = [
+const RAW_INITIAL_COORDINATIONS = [
   {
     id: "TX-901",
     organ: "Heart",
@@ -452,6 +452,293 @@ const INITIAL_COORDINATIONS = [
   }
 ];
 
+const MOCK_HISTORICAL_COORDINATIONS = [
+  {
+    id: "TX-801",
+    organ: "Heart",
+    bloodGroup: "O+",
+    donorHospital: "AIIMS New Delhi",
+    recipientHospital: "Fortis Healthcare Institute",
+    distance: 25,
+    transportTime: "0h 50m",
+    viabilityLimit: 5 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Ramesh Chandra (Age 55) — Post-myocardial infarction heart failure",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 93,
+    recipientUnit: "OT Room 1",
+    attendingPhysician: "Dr. S. Kler",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-801-H",
+    retrievalTime: "Yesterday 04:15 PM",
+    matchConfirmedAt: Date.now() - 36 * 3600 * 1000,
+    deliveredAt: Date.now() - (36 * 3600 * 1000) + 52 * 60 * 1000
+  },
+  {
+    id: "TX-802",
+    organ: "Kidney",
+    bloodGroup: "B+",
+    donorHospital: "CMC Vellore",
+    recipientHospital: "Apollo Central Hospital",
+    distance: 142,
+    transportTime: "2h 50m",
+    viabilityLimit: 30 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Suresh Patel (Age 62) — Diabetic nephropathy",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 82,
+    recipientUnit: "Renal Ward Bed 5",
+    attendingPhysician: "Dr. V. Kanitkar",
+    preservationMethod: "Hypothermic machine perfusion",
+    organId: "ORG-802-K",
+    retrievalTime: "Yesterday 11:30 AM",
+    matchConfirmedAt: Date.now() - 30 * 3600 * 1000,
+    deliveredAt: Date.now() - (30 * 3600 * 1000) + 185 * 60 * 1000
+  },
+  {
+    id: "TX-803",
+    organ: "Liver",
+    bloodGroup: "A-",
+    donorHospital: "Fortis Healthcare Institute",
+    recipientHospital: "Manipal Hospital Bangalore",
+    distance: 360,
+    transportTime: "5h 10m",
+    viabilityLimit: 10 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Gauri Sen (Age 43) — Chronic hepatitis B cirrhosis",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 89,
+    recipientUnit: "ICU Bed 7",
+    attendingPhysician: "Dr. A. Soin",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-803-L",
+    retrievalTime: "2 days ago 08:00 AM",
+    matchConfirmedAt: Date.now() - 48 * 3600 * 1000,
+    deliveredAt: Date.now() - (48 * 3600 * 1000) + 335 * 60 * 1000
+  },
+  {
+    id: "TX-804",
+    organ: "Lung",
+    bloodGroup: "AB+",
+    donorHospital: "KGMU Lucknow",
+    recipientHospital: "AIIMS New Delhi",
+    distance: 512,
+    transportTime: "6h 45m",
+    viabilityLimit: 6 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Farhan Khan (Age 39) — Severe COPD",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 91,
+    recipientUnit: "Pulmonary OT",
+    attendingPhysician: "Dr. D. Gupta",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-804-U",
+    retrievalTime: "2 days ago 02:00 PM",
+    matchConfirmedAt: Date.now() - 50 * 3600 * 1000,
+    deliveredAt: Date.now() - (50 * 3600 * 1000) + 420 * 60 * 1000
+  },
+  {
+    id: "TX-805",
+    organ: "Pancreas",
+    bloodGroup: "O-",
+    donorHospital: "SAHE Medical Center",
+    recipientHospital: "Krishna District Hospital",
+    distance: 210,
+    transportTime: "3h 15m",
+    viabilityLimit: 12 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Jyotsna Roy (Age 31) — Type 1 Diabetes mellitus",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 84,
+    recipientUnit: "OT Room 2",
+    attendingPhysician: "Dr. P. Joshi",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-805-P",
+    retrievalTime: "3 days ago 09:15 AM",
+    matchConfirmedAt: Date.now() - 72 * 3600 * 1000,
+    deliveredAt: Date.now() - (72 * 3600 * 1000) + 215 * 60 * 1000
+  },
+  {
+    id: "TX-806",
+    organ: "Cornea",
+    bloodGroup: "B-",
+    donorHospital: "Krishna District Hospital",
+    recipientHospital: "CMC Vellore",
+    distance: 310,
+    transportTime: "4h 30m",
+    viabilityLimit: 96 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Salim Merchant (Age 65) — Pseudophakic bullous keratopathy",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 76,
+    recipientUnit: "Opthalmology Unit Bed 3",
+    attendingPhysician: "Dr. R. Shroff",
+    preservationMethod: "Static cold storage (Moist chamber)",
+    organId: "ORG-806-C",
+    retrievalTime: "3 days ago 03:00 PM",
+    matchConfirmedAt: Date.now() - 80 * 3600 * 1000,
+    deliveredAt: Date.now() - (80 * 3600 * 1000) + 295 * 60 * 1000
+  },
+  {
+    id: "TX-807",
+    organ: "Heart",
+    bloodGroup: "A+",
+    donorHospital: "Apollo Central Hospital",
+    recipientHospital: "SAHE Medical Center",
+    distance: 40,
+    transportTime: "1h 0m",
+    viabilityLimit: 5 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Anita Desai (Age 47) — Dilated cardiomyopathy",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 95,
+    recipientUnit: "ICU Bed 3",
+    attendingPhysician: "Dr. Y. Gallo",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-807-H",
+    retrievalTime: "4 days ago 06:10 AM",
+    matchConfirmedAt: Date.now() - 96 * 3600 * 1000,
+    deliveredAt: Date.now() - (96 * 3600 * 1000) + 65 * 60 * 1000
+  },
+  {
+    id: "TX-808",
+    organ: "Kidney",
+    bloodGroup: "O+",
+    donorHospital: "Manipal Hospital Bangalore",
+    recipientHospital: "KGMU Lucknow",
+    distance: 820,
+    transportTime: "10h 30m",
+    viabilityLimit: 30 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Mohan Lal (Age 59) — ESRD",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 80,
+    recipientUnit: "Renal ICU",
+    attendingPhysician: "Dr. A. Gupta",
+    preservationMethod: "Hypothermic machine perfusion",
+    organId: "ORG-808-K",
+    retrievalTime: "4 days ago 10:00 PM",
+    matchConfirmedAt: Date.now() - 100 * 3600 * 1000,
+    deliveredAt: Date.now() - (100 * 3600 * 1000) + 680 * 60 * 1000
+  },
+  {
+    id: "TX-809",
+    organ: "Liver",
+    bloodGroup: "B+",
+    donorHospital: "AIIMS New Delhi",
+    recipientHospital: "CMC Vellore",
+    distance: 690,
+    transportTime: "8h 15m",
+    viabilityLimit: 10 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Savitri Devi (Age 51) — Fulminant hepatic failure",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 92,
+    recipientUnit: "Liver Trans. Unit Bed 1",
+    attendingPhysician: "Dr. V. Varma",
+    preservationMethod: "Normothermic machine perfusion",
+    organId: "ORG-809-L",
+    retrievalTime: "5 days ago 01:20 AM",
+    matchConfirmedAt: Date.now() - 120 * 3600 * 1000,
+    deliveredAt: Date.now() - (120 * 3600 * 1000) + 510 * 60 * 1000
+  },
+  {
+    id: "TX-810",
+    organ: "Lung",
+    bloodGroup: "O+",
+    donorHospital: "SAHE Medical Center",
+    recipientHospital: "Fortis Healthcare Institute",
+    distance: 180,
+    transportTime: "3h 0m",
+    viabilityLimit: 6 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Tarun Sen (Age 44) — Idiopathic pulmonary fibrosis",
+    status: "Not Completed in Time",
+    progress: 0.85,
+    priorityScore: 96,
+    recipientUnit: "ICU Bed 10",
+    attendingPhysician: "Dr. K. Raghavan",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-810-U",
+    retrievalTime: "5 days ago 08:30 AM",
+    matchConfirmedAt: Date.now() - 130 * 3600 * 1000,
+    deliveredAt: Date.now() - (130 * 3600 * 1000) + 6 * 3600 * 1000
+  },
+  {
+    id: "TX-811",
+    organ: "Heart",
+    bloodGroup: "AB-",
+    donorHospital: "CMC Vellore",
+    recipientHospital: "Manipal Hospital Bangalore",
+    distance: 190,
+    transportTime: "3h 10m",
+    viabilityLimit: 5 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Vicky Kaushal (Age 42) — End-stage ischemic heart disease",
+    status: "Not Completed in Time",
+    progress: 0.60,
+    priorityScore: 94,
+    recipientUnit: "Cardiac ICU",
+    attendingPhysician: "Dr. H. Sudarshan",
+    preservationMethod: "Cold ischemia — static cold storage",
+    organId: "ORG-811-H",
+    retrievalTime: "6 days ago 11:00 AM",
+    matchConfirmedAt: Date.now() - 150 * 3600 * 1000,
+    deliveredAt: Date.now() - (150 * 3600 * 1000) + 5 * 3600 * 1000
+  },
+  {
+    id: "TX-812",
+    organ: "Cornea",
+    bloodGroup: "A+",
+    donorHospital: "AIIMS New Delhi",
+    recipientHospital: "KGMU Lucknow",
+    distance: 480,
+    transportTime: "6h 15m",
+    viabilityLimit: 96 * 3600,
+    timeRemaining: 0,
+    patientNote: "Patient: Ranbir Singh (Age 32) — Keratoconus with acute hydrops",
+    status: "Delivered",
+    progress: 1.0,
+    priorityScore: 78,
+    recipientUnit: "Daycare Ward Bed 4",
+    attendingPhysician: "Dr. S. Natarajan",
+    preservationMethod: "Static cold storage (Moist chamber)",
+    organId: "ORG-812-C",
+    retrievalTime: "6 days ago 03:30 PM",
+    matchConfirmedAt: Date.now() - 160 * 3600 * 1000,
+    deliveredAt: Date.now() - (160 * 3600 * 1000) + 380 * 60 * 1000
+  }
+];
+
+const INITIAL_COORDINATIONS = [
+  ...RAW_INITIAL_COORDINATIONS.map(c => {
+    const isDelivered = c.status === 'Delivered';
+    const elapsed = c.viabilityLimit - (c.timeRemaining || 0);
+    const confirmedAt = Date.now() - elapsed * 1000;
+    
+    let durationMins = 30;
+    if (c.id === 'TX-909') durationMins = 35;
+    if (c.id === 'TX-916') durationMins = 265;
+    if (c.id === 'TX-918') durationMins = 28;
+
+    return {
+      ...c,
+      matchConfirmedAt: confirmedAt,
+      deliveredAt: isDelivered ? (confirmedAt + durationMins * 60 * 1000) : null
+    };
+  }),
+  ...MOCK_HISTORICAL_COORDINATIONS
+];
+
 // Helper to format countdown
 const formatCountdown = (totalSeconds) => {
   if (totalSeconds <= 0) return "00:00:00 [EXPIRED]";
@@ -501,6 +788,25 @@ const VIABILITY_LIMITS = {
   Cornea: 96 * 3600
 };
 
+// Mock Waitlisted Patients for Donor matching flow
+const MOCK_WAITLISTED_PATIENTS = [
+  { name: "Sanjay Dutt", age: 54, organ: "Heart", bloodGroup: "AB+", hospital: "Apollo Central Hospital", urgency: "Critical" },
+  { name: "Nisha Patel", age: 29, organ: "Heart", bloodGroup: "O+", hospital: "Fortis Healthcare Institute", urgency: "High" },
+  { name: "Rahul Deshmukh", age: 42, organ: "Heart", bloodGroup: "A-", hospital: "Manipal Hospital Bangalore", urgency: "Critical" },
+  { name: "Kiran Mazumdar", age: 61, organ: "Kidney", bloodGroup: "B+", hospital: "AIIMS New Delhi", urgency: "Stable" },
+  { name: "Arjun Rampal", age: 38, organ: "Kidney", bloodGroup: "O-", hospital: "CMC Vellore", urgency: "High" },
+  { name: "Pooja Hegde", age: 27, organ: "Kidney", bloodGroup: "A+", hospital: "KGMU Lucknow", urgency: "Critical" },
+  { name: "Anil Kapoor", age: 65, organ: "Liver", bloodGroup: "B-", hospital: "SAHE Medical Center", urgency: "High" },
+  { name: "Deepika Padukone", age: 34, organ: "Liver", bloodGroup: "O+", hospital: "Krishna District Hospital", urgency: "Critical" },
+  { name: "Ranbir Kapoor", age: 37, organ: "Liver", bloodGroup: "AB-", hospital: "Apollo Central Hospital", urgency: "Stable" },
+  { name: "Alia Bhatt", age: 28, organ: "Lung", bloodGroup: "A+", hospital: "Manipal Hospital Bangalore", urgency: "High" },
+  { name: "Varun Dhawan", age: 32, organ: "Lung", bloodGroup: "O-", hospital: "Fortis Healthcare Institute", urgency: "Critical" },
+  { name: "Sara Ali Khan", age: 26, organ: "Pancreas", bloodGroup: "B+", hospital: "AIIMS New Delhi", urgency: "Stable" },
+  { name: "Kartik Aaryan", age: 31, organ: "Pancreas", bloodGroup: "O+", hospital: "CMC Vellore", urgency: "High" },
+  { name: "Janhvi Kapoor", age: 25, organ: "Cornea", bloodGroup: "A-", hospital: "KGMU Lucknow", urgency: "Stable" },
+  { name: "Ishaan Khatter", age: 24, organ: "Cornea", bloodGroup: "B-", hospital: "SAHE Medical Center", urgency: "High" }
+];
+
 export default function App() {
   // Navigation & Auth State
   const [view, setView] = useState('login'); // 'login' | 'dashboard' | 'request' | 'matches' | 'detail'
@@ -516,6 +822,10 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState('Urgency');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // History Filters State
+  const [historySearchTerm, setHistorySearchTerm] = useState('');
+  const [historySortOrder, setHistorySortOrder] = useState('Most Recent');
+
   // Request form state
   const [requestForm, setRequestForm] = useState({
     patientName: '',
@@ -524,6 +834,17 @@ export default function App() {
     organType: 'Heart',
     urgencyLevel: 'Critical',
     requestingHospital: ''
+  });
+
+  const [coordinationFlow, setCoordinationFlow] = useState('request'); // 'request' | 'donor'
+
+  // Donor form state
+  const [donorForm, setDonorForm] = useState({
+    organType: 'Heart',
+    bloodGroup: 'O+',
+    donorHospital: '',
+    retrievalTime: '',
+    preservationMethod: 'Cold ischemia — static cold storage'
   });
 
   // Selected candidate matches & flow control
@@ -538,21 +859,28 @@ export default function App() {
     const interval = setInterval(() => {
       setCoordinations(prev => 
         prev.map(c => {
-          if (c.status === 'Delivered') return c;
+          if (c.status === 'Delivered' || c.status === 'Not Completed in Time') return c;
           
           const nextTime = Math.max(0, c.timeRemaining - 1);
           if (nextTime <= 0) {
-            return { ...c, timeRemaining: 0 };
+            return { 
+              ...c, 
+              timeRemaining: 0,
+              status: 'Not Completed in Time',
+              deliveredAt: Date.now()
+            };
           }
 
           let nextProgress = c.progress || 0;
           let nextStatus = c.status;
+          let nextDeliveredAt = c.deliveredAt;
 
           // Animate transport cases smoothly in-memory (0.25% per second)
           if (c.status === 'Transport In Progress') {
             nextProgress = Math.min(1.0, nextProgress + 0.0025);
             if (nextProgress >= 1.0) {
               nextStatus = 'Delivered';
+              nextDeliveredAt = Date.now();
             }
           }
 
@@ -560,7 +888,8 @@ export default function App() {
             ...c, 
             timeRemaining: nextTime, 
             progress: nextProgress, 
-            status: nextStatus 
+            status: nextStatus,
+            deliveredAt: nextDeliveredAt
           };
         })
       );
@@ -572,6 +901,11 @@ export default function App() {
   useEffect(() => {
     if (user && user.hospitalId) {
       setRequestForm(prev => ({ ...prev, requestingHospital: user.hospitalId }));
+      setDonorForm(prev => ({ 
+        ...prev, 
+        donorHospital: user.hospitalId,
+        retrievalTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }));
     }
   }, [user]);
 
@@ -651,6 +985,53 @@ export default function App() {
     }, 2000);
   };
 
+  // Donor Form submit handler - Find recipient matches
+  const handleDonorSubmit = (e) => {
+    e.preventDefault();
+    setView('request-loading');
+
+    setTimeout(() => {
+      const donorHosp = donorForm.donorHospital;
+      const donorBg = donorForm.bloodGroup;
+      const organ = donorForm.organType;
+      
+      const donorCoord = HOSPITAL_COORDINATES[donorHosp] || { x: 100, y: 100 };
+
+      const compatible = MOCK_WAITLISTED_PATIENTS.filter(p => {
+        if (p.organ.toLowerCase() !== organ.toLowerCase()) return false;
+        if (p.hospital === donorHosp) return false;
+        return getCompatibleDonorGroups(p.bloodGroup).includes(donorBg);
+      });
+
+      const generatedMatches = compatible.map((p, index) => {
+        const recCoord = HOSPITAL_COORDINATES[p.hospital] || { x: 500, y: 200 };
+        const dx = recCoord.x - donorCoord.x;
+        const dy = recCoord.y - donorCoord.y;
+        const distPx = Math.sqrt(dx*dx + dy*dy);
+        const distance = Math.round(distPx * 0.5 + 10);
+
+        const hours = Math.floor(distance / 70);
+        const mins = Math.round((distance % 70) * 0.85);
+        const transportTime = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+
+        return {
+          hospital: p.hospital, // recipient hospital
+          patientName: p.name,
+          patientAge: p.age,
+          patientBg: p.bloodGroup,
+          patientUrgency: p.urgency,
+          distance,
+          transportTime,
+          donorBg: donorBg
+        };
+      });
+
+      generatedMatches.sort((a, b) => a.distance - b.distance);
+      setCandidateMatches(generatedMatches.slice(0, 3));
+      setView('matches');
+    }, 2000);
+  };
+
   // Confirm and dispatch handler
   const handleConfirmDispatch = (match) => {
     setSelectedMatch(match);
@@ -658,43 +1039,81 @@ export default function App() {
 
     setTimeout(() => {
       const newCoordId = `TX-${Math.floor(200 + Math.random() * 800)}`;
-      const organLimit = VIABILITY_LIMITS[requestForm.organType];
-
-      const newCoord = {
-        id: newCoordId,
-        organ: requestForm.organType,
-        bloodGroup: match.donorBg,
-        donorHospital: match.hospital,
-        recipientHospital: requestForm.requestingHospital,
-        distance: match.distance,
-        transportTime: match.transportTime,
-        viabilityLimit: organLimit,
-        timeRemaining: organLimit,
-        patientNote: `Patient: ${requestForm.patientName} (Age ${requestForm.age}) — ${requestForm.urgencyLevel} case`,
-        status: "Transport In Progress",
-        progress: 0.0,
-        priorityScore: Math.floor(84 + Math.random() * 15),
-        recipientUnit: "ICU Bed " + Math.floor(1 + Math.random() * 15),
-        attendingPhysician: "Dr. A. Nair",
-        preservationMethod: "Cold ischemia — static cold storage",
-        organId: `ORG-${Math.floor(100 + Math.random() * 900)}-${requestForm.organType[0]}`,
-        retrievalTime: "Retrieved Just Now",
-        urgencyLevel: requestForm.urgencyLevel
-      };
+      
+      let newCoord;
+      if (coordinationFlow === 'donor') {
+        const organLimit = VIABILITY_LIMITS[donorForm.organType];
+        newCoord = {
+          id: newCoordId,
+          organ: donorForm.organType,
+          bloodGroup: match.donorBg,
+          donorHospital: donorForm.donorHospital,
+          recipientHospital: match.hospital,
+          distance: match.distance,
+          transportTime: match.transportTime,
+          viabilityLimit: organLimit,
+          timeRemaining: organLimit,
+          patientNote: `Patient: ${match.patientName} (Age ${match.patientAge}) — ${match.patientUrgency} case`,
+          status: "Transport In Progress",
+          progress: 0.0,
+          priorityScore: Math.floor(84 + Math.random() * 15),
+          recipientUnit: "OT Room " + Math.floor(1 + Math.random() * 5),
+          attendingPhysician: "Dr. A. Nair",
+          preservationMethod: donorForm.preservationMethod,
+          organId: `ORG-${Math.floor(100 + Math.random() * 900)}-${donorForm.organType[0]}`,
+          retrievalTime: donorForm.retrievalTime || "Retrieved Just Now",
+          urgencyLevel: match.patientUrgency,
+          matchConfirmedAt: Date.now()
+        };
+      } else {
+        const organLimit = VIABILITY_LIMITS[requestForm.organType];
+        newCoord = {
+          id: newCoordId,
+          organ: requestForm.organType,
+          bloodGroup: match.donorBg,
+          donorHospital: match.hospital,
+          recipientHospital: requestForm.requestingHospital,
+          distance: match.distance,
+          transportTime: match.transportTime,
+          viabilityLimit: organLimit,
+          timeRemaining: organLimit,
+          patientNote: `Patient: ${requestForm.patientName} (Age ${requestForm.age}) — ${requestForm.urgencyLevel} case`,
+          status: "Transport In Progress",
+          progress: 0.0,
+          priorityScore: Math.floor(84 + Math.random() * 15),
+          recipientUnit: "ICU Bed " + Math.floor(1 + Math.random() * 15),
+          attendingPhysician: "Dr. A. Nair",
+          preservationMethod: "Cold ischemia — static cold storage",
+          organId: `ORG-${Math.floor(100 + Math.random() * 900)}-${requestForm.organType[0]}`,
+          retrievalTime: "Retrieved Just Now",
+          urgencyLevel: requestForm.urgencyLevel,
+          matchConfirmedAt: Date.now()
+        };
+      }
 
       setCoordinations(prev => [newCoord, ...prev]);
       setView('success-splash');
 
       setTimeout(() => {
         setView('dashboard');
-        setRequestForm({
-          patientName: '',
-          age: '',
-          bloodGroup: 'O+',
-          organType: 'Heart',
-          urgencyLevel: 'Critical',
-          requestingHospital: user?.hospitalId || ''
-        });
+        if (coordinationFlow === 'donor') {
+          setDonorForm({
+            organType: 'Heart',
+            bloodGroup: 'O+',
+            donorHospital: user?.hospitalId || '',
+            retrievalTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            preservationMethod: 'Cold ischemia — static cold storage'
+          });
+        } else {
+          setRequestForm({
+            patientName: '',
+            age: '',
+            bloodGroup: 'O+',
+            organType: 'Heart',
+            urgencyLevel: 'Critical',
+            requestingHospital: user?.hospitalId || ''
+          });
+        }
         setSelectedMatch(null);
       }, 2000);
 
@@ -729,6 +1148,7 @@ export default function App() {
   const getFilteredAndSorted = () => {
     return coordinations
       .filter(item => {
+        if (item.status === 'Delivered' || item.status === 'Not Completed in Time') return false;
         if (organFilter !== 'All' && item.organ !== organFilter) return false;
         if (searchTerm.trim() !== '') {
           const term = searchTerm.toLowerCase();
@@ -772,16 +1192,70 @@ export default function App() {
 
   const filteredCoordinations = getFilteredAndSorted();
 
+  // Filtered and sorted list for History tab
+  const getHistoryFilteredAndSorted = () => {
+    return coordinations
+      .filter(item => {
+        if (item.status !== 'Delivered' && item.status !== 'Not Completed in Time') return false;
+        if (historySearchTerm.trim() !== '') {
+          const term = historySearchTerm.toLowerCase();
+          const patientName = item.patientNote.includes('Patient:') 
+            ? item.patientNote.split('—')[0].replace('Patient: ', '').trim().toLowerCase()
+            : '';
+          return (
+            item.id.toLowerCase().includes(term) ||
+            (item.organId && item.organId.toLowerCase().includes(term)) ||
+            patientName.includes(term)
+          );
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (historySortOrder === 'Most Recent') {
+          return (b.deliveredAt || 0) - (a.deliveredAt || 0);
+        }
+        if (historySortOrder === 'Fastest Coordination Time') {
+          if (a.status === 'Not Completed in Time' && b.status === 'Delivered') return 1;
+          if (a.status === 'Delivered' && b.status === 'Not Completed in Time') return -1;
+          if (a.status === 'Not Completed in Time' && b.status === 'Not Completed in Time') return 0;
+          
+          const durA = (a.deliveredAt || 0) - (a.matchConfirmedAt || 0);
+          const durB = (b.deliveredAt || 0) - (b.matchConfirmedAt || 0);
+          return durA - durB;
+        }
+        if (historySortOrder === 'Organ Type') {
+          return a.organ.localeCompare(b.organ);
+        }
+        return 0;
+      });
+  };
+
+  const filteredHistoryCoordinations = getHistoryFilteredAndSorted();
+
   // Statistics
-  const totalActive = coordinations.filter(c => c.status !== 'Delivered').length;
-  const totalCritical = coordinations.filter(c => calculateUrgency(c) === 'Critical' && c.status !== 'Delivered').length;
-  const totalHospitals = new Set(coordinations.flatMap(c => [c.donorHospital, c.recipientHospital])).size;
+  const totalActive = coordinations.filter(c => c.status !== 'Delivered' && c.status !== 'Not Completed in Time').length;
+  const totalCritical = coordinations.filter(c => calculateUrgency(c) === 'Critical' && c.status !== 'Delivered' && c.status !== 'Not Completed in Time').length;
+  const totalHospitals = new Set(coordinations.filter(c => c.status !== 'Delivered' && c.status !== 'Not Completed in Time').flatMap(c => [c.donorHospital, c.recipientHospital])).size;
   
-  const activeCoordinations = coordinations.filter(c => c.status !== 'Delivered');
+  const activeCoordinations = coordinations.filter(c => c.status !== 'Delivered' && c.status !== 'Not Completed in Time');
   const avgDistance = activeCoordinations.length > 0 
     ? Math.round(activeCoordinations.reduce((acc, c) => acc + c.distance, 0) / activeCoordinations.length) 
     : 0;
   const avgHours = (avgDistance / 68).toFixed(1);
+
+  // History Statistics
+  const historyDelivered = coordinations.filter(c => c.status === 'Delivered');
+  const totalCompletedCoordinations = historyDelivered.length;
+  const averageTotalCoordinationTime = historyDelivered.length > 0
+    ? Math.round(historyDelivered.reduce((acc, c) => acc + (c.deliveredAt - c.matchConfirmedAt) / 60000, 0) / historyDelivered.length)
+    : 0;
+  
+  let fastestCoordinationTime = 0;
+  if (historyDelivered.length > 0) {
+    fastestCoordinationTime = Math.min(...historyDelivered.map(c => Math.round((c.deliveredAt - c.matchConfirmedAt) / 60000)));
+  }
+
+  const historyExpiredCount = coordinations.filter(c => c.status === 'Not Completed in Time').length;
 
   // Detail Case Lookup
   const selectedCase = coordinations.find(c => c.id === selectedCaseId);
@@ -874,11 +1348,50 @@ export default function App() {
         <div className="dashboard-layout">
           {/* Top Navigation Bar */}
           <header className="top-bar">
-            <div className="brand" style={{ cursor: 'pointer' }} onClick={() => setView('dashboard')}>
-              <div className="brand-logo">
-                <Activity size={18} />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="brand" style={{ cursor: 'pointer' }} onClick={() => setView('dashboard')}>
+                <div className="brand-logo">
+                  <Activity size={18} />
+                </div>
+                <span className="brand-name">OrganLink</span>
               </div>
-              <span className="brand-name">OrganLink</span>
+
+              <nav className="nav-tabs" style={{ display: 'flex', gap: '8px', marginLeft: '32px' }}>
+                <button 
+                  onClick={() => setView('dashboard')}
+                  className={`btn-tab ${view !== 'history' ? 'active' : ''}`}
+                  style={{
+                    padding: '8px 16px',
+                    fontSize: '13.5px',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    backgroundColor: (view !== 'history' && view !== 'login') ? 'var(--primary-blue-light)' : 'transparent',
+                    color: (view !== 'history' && view !== 'login') ? 'var(--primary-blue)' : 'var(--text-muted)',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  Dashboard
+                </button>
+                <button 
+                  onClick={() => setView('history')}
+                  className={`btn-tab ${view === 'history' ? 'active' : ''}`}
+                  style={{
+                    padding: '8px 16px',
+                    fontSize: '13.5px',
+                    fontWeight: '600',
+                    borderRadius: '6px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    backgroundColor: view === 'history' ? 'var(--primary-blue-light)' : 'transparent',
+                    color: view === 'history' ? 'var(--primary-blue)' : 'var(--text-muted)',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  History
+                </button>
+              </nav>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -973,14 +1486,31 @@ export default function App() {
                     </select>
                   </div>
 
-                  <button 
-                    onClick={() => setView('request')} 
-                    className="btn-primary"
-                    style={{ width: 'auto', padding: '10px 18px' }}
-                  >
-                    <Plus size={16} />
-                    <span>Request Coordination</span>
-                  </button>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button 
+                      onClick={() => {
+                        setCoordinationFlow('donor');
+                        setView('donor-form');
+                      }} 
+                      className="btn-primary"
+                      style={{ width: 'auto', padding: '10px 18px', backgroundColor: 'var(--status-green)' }}
+                    >
+                      <Plus size={16} />
+                      <span>Donor Coordination</span>
+                    </button>
+
+                    <button 
+                      onClick={() => {
+                        setCoordinationFlow('request');
+                        setView('request');
+                      }} 
+                      className="btn-primary"
+                      style={{ width: 'auto', padding: '10px 18px' }}
+                    >
+                      <Plus size={16} />
+                      <span>Request Coordination</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Grid List of Cards */}
@@ -1092,6 +1622,163 @@ export default function App() {
                         </div>
                       );
                     })}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* ----------------- PAGE 2.2: HISTORY TAB ----------------- */}
+            {view === 'history' && (
+              <>
+                {/* Statistics Cards */}
+                <div className="stats-grid">
+                  <div className="stat-card">
+                    <span className="stat-title">Total Completed Coordinations</span>
+                    <span className="stat-value">{totalCompletedCoordinations}</span>
+                    <span className="stat-meta">Delivered to transplant centers</span>
+                  </div>
+
+                  <div className="stat-card">
+                    <span className="stat-title">Average Coordination Time</span>
+                    <span className="stat-value">
+                      {averageTotalCoordinationTime > 0 ? (
+                        averageTotalCoordinationTime >= 60 ? (
+                          `${Math.floor(averageTotalCoordinationTime / 60)}h ${averageTotalCoordinationTime % 60}m`
+                        ) : (
+                          `${averageTotalCoordinationTime}m`
+                        )
+                      ) : (
+                        "0m"
+                      )}
+                    </span>
+                    <span className="stat-meta">Average coordination time reduced through real-time tracking</span>
+                  </div>
+
+                  <div className="stat-card">
+                    <span className="stat-title">Fastest Coordination</span>
+                    <span className="stat-value">
+                      {fastestCoordinationTime > 0 ? (
+                        fastestCoordinationTime >= 60 ? (
+                          `${Math.floor(fastestCoordinationTime / 60)}h ${fastestCoordinationTime % 60}m`
+                        ) : (
+                          `${fastestCoordinationTime}m`
+                        )
+                      ) : (
+                        "0m"
+                      )}
+                    </span>
+                    <span className="stat-meta">Minimum match-to-delivery duration</span>
+                  </div>
+
+                  <div className="stat-card" style={{ borderLeft: '3px solid var(--status-red)' }}>
+                    <span className="stat-title" style={{ color: 'var(--status-red)' }}>Not Completed in Time</span>
+                    <span className="stat-value" style={{ color: 'var(--status-red)' }}>{historyExpiredCount}</span>
+                    <span className="stat-meta">Organs expired before delivery</span>
+                  </div>
+                </div>
+
+                {/* Filter and Control Row */}
+                <div className="filter-bar">
+                  <div className="filters-left">
+                    <div className="search-wrapper">
+                      <Search size={14} className="search-icon-svg" />
+                      <input 
+                        type="text" 
+                        placeholder="Search by Organ ID or Patient Name..." 
+                        className="search-input"
+                        value={historySearchTerm}
+                        onChange={(e) => setHistorySearchTerm(e.target.value)}
+                      />
+                    </div>
+
+                    <select 
+                      className="sort-select"
+                      value={historySortOrder}
+                      onChange={(e) => setHistorySortOrder(e.target.value)}
+                    >
+                      <option value="Most Recent">Sort by: Most Recent</option>
+                      <option value="Fastest Coordination Time">Sort by: Fastest Time</option>
+                      <option value="Organ Type">Sort by: Organ Type</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* History List Table / Cards */}
+                {filteredHistoryCoordinations.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                    No completed or expired coordination records found.
+                  </div>
+                ) : (
+                  <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', border: '1px solid var(--border-color)', overflow: 'hidden', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+                      <thead>
+                        <tr style={{ backgroundColor: 'var(--bg-light)', borderBottom: '1px solid var(--border-color)', fontWeight: '600', color: 'var(--text-muted)' }}>
+                          <th style={{ padding: '16px' }}>Organ / ID</th>
+                          <th style={{ padding: '16px' }}>Blood Group</th>
+                          <th style={{ padding: '16px' }}>Route Details</th>
+                          <th style={{ padding: '16px' }}>Total Coordination Time</th>
+                          <th style={{ padding: '16px' }}>Final Status</th>
+                          <th style={{ padding: '16px' }}>Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredHistoryCoordinations.map((item) => {
+                          const duration = item.deliveredAt && item.matchConfirmedAt
+                            ? Math.round((item.deliveredAt - item.matchConfirmedAt) / 60000)
+                            : 0;
+                          const durationText = duration > 0
+                            ? (duration >= 60 ? `${Math.floor(duration / 60)}h ${duration % 60}m` : `${duration}m`)
+                            : "N/A";
+                          const isDelivered = item.status === 'Delivered';
+                          
+                          return (
+                            <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.15s' }} className="history-table-row">
+                              <td style={{ padding: '16px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <div className="organ-icon-wrapper" style={{ width: '30px', height: '30px' }}>
+                                    <RenderOrganIcon organ={item.organ} />
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: '750', color: 'var(--text-main)' }}>{item.organ}</div>
+                                    <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>ID: {item.id}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <span className="blood-badge" style={{ padding: '2px 8px', fontSize: '12px' }}>{item.bloodGroup}</span>
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <div style={{ fontWeight: '600' }}>
+                                  <strong>{item.donorHospital}</strong> 
+                                  <ArrowRight size={12} style={{ display: 'inline', margin: '0 6px', color: 'var(--text-muted)' }} /> 
+                                  <strong>{item.recipientHospital}</strong>
+                                </div>
+                                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                  {item.patientNote.includes('Patient:') ? item.patientNote.split('—')[0] : item.patientNote}
+                                </div>
+                              </td>
+                              <td style={{ padding: '16px', fontFamily: 'var(--font-mono)', fontWeight: '600' }}>
+                                {isDelivered ? durationText : "Expired"}
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <span className={`status-badge ${isDelivered ? 'badge-delivered' : 'card-critical'}`} style={{ borderLeft: 'none', padding: '4px 8px', borderRadius: '4px', display: 'inline-block', color: !isDelivered ? 'var(--status-red)' : undefined, backgroundColor: !isDelivered ? 'var(--status-red-bg)' : undefined }}>
+                                  {isDelivered ? 'Delivered' : 'Expired'}
+                                </span>
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <button 
+                                  onClick={() => handleOpenDetail(item.id)}
+                                  className="btn-secondary"
+                                  style={{ padding: '4px 10px', fontSize: '12px' }}
+                                >
+                                  View Details
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </>
@@ -1547,14 +2234,128 @@ export default function App() {
               </div>
             )}
 
+            {/* ----------------- PAGE 3.2: DONOR COORDINATION FORM ----------------- */}
+            {view === 'donor-form' && (
+              <div className="form-view-container">
+                <div className="form-title-bar">
+                  <h2 className="form-title">Log Donor Organ</h2>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                    Logistics Step 1 of 2
+                  </span>
+                </div>
+
+                <form onSubmit={handleDonorSubmit}>
+                  <div className="grid-2-col">
+                    <div className="form-group">
+                      <label htmlFor="donorOrganType">Organ Type Available</label>
+                      <select 
+                        id="donorOrganType"
+                        className="input-field"
+                        value={donorForm.organType}
+                        onChange={(e) => setDonorForm({ ...donorForm, organType: e.target.value })}
+                      >
+                        <option value="Heart">Heart (~5h viability)</option>
+                        <option value="Lung">Lung (~6h viability)</option>
+                        <option value="Liver">Liver (~10h viability)</option>
+                        <option value="Pancreas">Pancreas (~12h viability)</option>
+                        <option value="Kidney">Kidney (~30h viability)</option>
+                        <option value="Cornea">Cornea (~96h viability)</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="donorBloodGroup">Blood Group</label>
+                      <select 
+                        id="donorBloodGroup"
+                        className="input-field"
+                        value={donorForm.bloodGroup}
+                        onChange={(e) => setDonorForm({ ...donorForm, bloodGroup: e.target.value })}
+                      >
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid-2-col">
+                    <div className="form-group">
+                      <label htmlFor="donorHospital">Donor Hospital Node</label>
+                      <select 
+                        id="donorHospital"
+                        className="input-field"
+                        value={donorForm.donorHospital}
+                        onChange={(e) => setDonorForm({ ...donorForm, donorHospital: e.target.value })}
+                      >
+                        {MOCK_HOSPITALS.map(h => (
+                          <option key={h} value={h}>{h}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="donorRetrievalTime">Retrieval Time</label>
+                      <input 
+                        type="text" 
+                        id="donorRetrievalTime"
+                        className="input-field"
+                        value={donorForm.retrievalTime}
+                        onChange={(e) => setDonorForm({ ...donorForm, retrievalTime: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="donorPreservationMethod">Preservation Method</label>
+                    <select 
+                      id="donorPreservationMethod"
+                      className="input-field"
+                      value={donorForm.preservationMethod}
+                      onChange={(e) => setDonorForm({ ...donorForm, preservationMethod: e.target.value })}
+                    >
+                      <option value="Cold ischemia — static cold storage">Cold ischemia — static cold storage</option>
+                      <option value="Hypothermic machine perfusion">Hypothermic machine perfusion</option>
+                      <option value="Normothermic machine perfusion">Normothermic machine perfusion</option>
+                      <option value="Static cold storage (Moist chamber)">Static cold storage (Moist chamber)</option>
+                    </select>
+                  </div>
+
+                  <div className="form-actions">
+                    <button 
+                      type="button" 
+                      onClick={() => setView('dashboard')} 
+                      className="btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="btn-primary"
+                      style={{ width: 'auto', backgroundColor: 'var(--status-green)' }}
+                    >
+                      Search Compatible Recipients
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             {/* ----------------- COMPATIBILITY VERIFICATION SCREEN ----------------- */}
             {view === 'request-loading' && (
               <div className="form-view-container">
                 <div className="loading-overlay">
                   <div className="spinner"></div>
-                  <div className="loading-text">Verifying Compatibility & Locating Donor Hospital...</div>
+                  <div className="loading-text">
+                    {coordinationFlow === 'donor' ? "Searching compatible recipient hospitals..." : "Verifying Compatibility & Locating Donor Hospital..."}
+                  </div>
                   <div className="loading-subtext">
-                    Cross-checking blood groups and calculating geographical routing matrix.
+                    {coordinationFlow === 'donor' ? "Cross-checking waitlisted recipient blood group compatibility and calculating transit routing." : "Cross-checking blood groups and calculating geographical routing matrix."}
                   </div>
                 </div>
               </div>
@@ -1564,7 +2365,9 @@ export default function App() {
             {view === 'matches' && (
               <div className="form-view-container">
                 <div className="form-title-bar">
-                  <h2 className="form-title">Compatible Donor Nodes Found</h2>
+                  <h2 className="form-title">
+                    {coordinationFlow === 'donor' ? "Compatible Recipient Patients Found" : "Compatible Donor Nodes Found"}
+                  </h2>
                   <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     Logistics Step 2 of 2
                   </span>
@@ -1572,10 +2375,18 @@ export default function App() {
 
                 <div style={{ marginBottom: '20px' }}>
                   <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: 'var(--text-main)' }}>
-                    Transplant matching criteria: <strong>{requestForm.organType}</strong> for Patient blood group <strong>{requestForm.bloodGroup}</strong>.
+                    {coordinationFlow === 'donor' ? (
+                      <span>Donor organ: <strong>{donorForm.organType} ({donorForm.bloodGroup})</strong> from <strong>{donorForm.donorHospital}</strong>.</span>
+                    ) : (
+                      <span>Transplant matching criteria: <strong>{requestForm.organType}</strong> for Patient blood group <strong>{requestForm.bloodGroup}</strong>.</span>
+                    )}
                   </p>
                   <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>
-                    Matches represent donor hospitals containing compatible matches identified via regional allocation protocols. Ranked below by transport proximity.
+                    {coordinationFlow === 'donor' ? (
+                      <span>Matches represent waiting patients at recipient hospitals matching compatibility rules, sorted nearest first.</span>
+                    ) : (
+                      <span>Matches represent donor hospitals containing compatible matches identified via regional allocation protocols. Ranked below by transport proximity.</span>
+                    )}
                   </p>
                 </div>
 
@@ -1591,8 +2402,10 @@ export default function App() {
                             Recommended Route
                           </span>
                         )}
-                        <span className="candidate-hospital">{candidate.hospital}</span>
-                        <div className="candidate-meta" style={{ display: 'flex', gap: '16px', marginTop: '4px' }}>
+                        <span className="candidate-hospital">
+                          {coordinationFlow === 'donor' ? `${candidate.hospital} (Recipient Node)` : candidate.hospital}
+                        </span>
+                        <div className="candidate-meta" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '4px' }}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <Navigation size={12} className="text-primary-blue" />
                             {candidate.distance} km
@@ -1601,9 +2414,15 @@ export default function App() {
                             <Clock size={12} className="text-primary-blue" />
                             Est. Transport: {candidate.transportTime}
                           </span>
-                          <span style={{ fontWeight: 600, color: 'var(--primary-blue)' }}>
-                            Donor Blood: {candidate.donorBg}
-                          </span>
+                          {coordinationFlow === 'donor' ? (
+                            <span style={{ fontWeight: 650, color: 'var(--status-green)' }}>
+                              Patient: {candidate.patientName} (Age {candidate.patientAge}) — Urgency: {candidate.patientUrgency}
+                            </span>
+                          ) : (
+                            <span style={{ fontWeight: 600, color: 'var(--primary-blue)' }}>
+                              Donor Blood: {candidate.donorBg}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -1622,7 +2441,7 @@ export default function App() {
                 <div className="form-actions" style={{ marginTop: '32px' }}>
                   <button 
                     type="button" 
-                    onClick={() => setView('request')} 
+                    onClick={() => setView(coordinationFlow === 'donor' ? 'donor-form' : 'request')} 
                     className="btn-secondary"
                   >
                     Back to Form
