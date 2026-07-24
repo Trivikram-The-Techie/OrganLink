@@ -33,10 +33,10 @@ export default function RecipientDashboard() {
       snapshot.forEach((doc) => {
         const caseData = doc.data();
         const candidates = caseData.rankedCandidates || [];
-        const isCandidate = candidates.some(c => c.hospitalId === user.hospitalId);
+        const isCandidate = candidates.some(c => c.recipientHospitalId === user.hospitalId);
         
         if (isCandidate && !dismissedCases.includes(doc.id)) {
-          const matchInfo = candidates.find(c => c.hospitalId === user.hospitalId);
+          const matchInfo = candidates.find(c => c.recipientHospitalId === user.hospitalId);
           alerts.push({
             caseId: doc.id,
             ...caseData,
@@ -233,7 +233,7 @@ export default function RecipientDashboard() {
               ) : (
                 <div className="space-y-4">
                   {myCases.map((c) => {
-                    const match = c.rankedCandidates.find(rc => rc.hospitalId === user.hospitalId);
+                    const match = c.rankedCandidates.find(rc => rc.recipientHospitalId === user.hospitalId);
                     
                     return (
                       <div key={c.caseId} className="p-4 bg-slate-50/40 border border-medical-border rounded-xl hover:border-blue-500/40 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm animate-fade-in">
