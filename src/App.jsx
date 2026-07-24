@@ -1673,6 +1673,206 @@ export default function App() {
           </footer>
         </div>
       )}
+
+      {/* Real-time AI Support Assistant Widget */}
+      <ChatWidget 
+        coordinations={coordinations} 
+        calculateUrgency={calculateUrgency} 
+        formatCountdown={formatCountdown} 
+      />
     </div>
   );
 }
+
+/* ----------------- LOCAL CHAT ENGINE & COMPONENT ----------------- */
+
+const generateLocalResponse = (question, coordinations, calculateUrgency, formatCountdown) => {
+  const q = question.toLowerCase().trim();
+
+  // 1. Specific Case ID Lookup (e.g., TX-901)
+  const caseIdMatch = q.match(/tx-\d+/);
+  if (caseIdMatch) {
+    const caseId = caseIdMatch[0].toUpperCase();
+    const item = coordinations.find(c => c.id.toUpperCase() === caseId);
+    if (item) {
+      const urgency = calculateUrgency(item);
+      const isDelivered = item.status === 'Delivered';
+      const timerText = isDelivered ? 'Arrived & Delivered' : formatCountdown(item.timeRemaining);
+      return `Case ${caseId} (${item.organ}) is currently under status "${item.status}" with ${urgency} urgency. It is traveling from ${item.donorHospital} to ${item.recipientHospital} (${item.distance} km). Time remaining: ${timerText}.`;
+    } else {
+      return `I couldn't find an active case with ID ${caseId} in our in-memory records. Please check the ID (e.g. TX-901) and try again.`;
+    }
+  }
+
+  // 2. Active critical cases query
+  if (q.includes('critical') || q.includes('urgency') || q.includes('high priority')) {
+    const criticalCases = coordinations.filter(c => calculateUrgency(c) === 'Critical' && c.status !== 'Delivered');
+    if (criticalCases.length > 0) {
+      const caseList = criticalCases.map(c => `${c.id} (${c.organ} at ${c.recipientHospital})`).join(', ');
+      return `There are currently ${criticalCases.length} active critical cases in the system: ${caseList}. These require immediate transport priority.`;
+    } else {
+      return `Currently, there are no cases marked with Critical urgency on the active waitlist. All cases have stable viability times.`;
+    }
+  }
+
+  // 3. Expiry queries
+  if (q.includes('expiry') || q.includes('expire') || q.includes('viability time')) {
+    const nearingExpiry = coordinations.filter(c => c.status !== 'Delivered' && (c.timeRemaining / c.viabilityLimit) < 0.40);
+    if (nearingExpiry.length > 0) {
+      const list = nearingExpiry.map(c => `${c.id} (${c.organ} - ${Math.round(c.timeRemaining / 60)}m viability remaining)`).join(', ');
+      return `The following cases are nearing their viability limit (<40% remaining): ${list}. Please verify transit tracking status.`;
+    } else {
+      return `All active organ dispatches currently have a secure viability window (>40% of their limit remaining).`;
+    }
+  }
+
+  // 4. Heuristics/Urgency Calculation
+  if (q.includes('calculate') || q.includes('formula') || q.includes('score') || q.includes('heuristics')) {
+    return `The matching priority score is calculated using three metrics: Medical Urgency (45% weight), Transport Feasibility (35% weight), and Blood Group Compatibility Fit (20% weight). Matches are automatically discarded if estimated transit duration exceeds the viability window.`;
+  }
+
+  // 5. General "How does it work"
+  if (q.includes('how does') || q.includes('what is') || q.includes('about') || q.includes('support')) {
+    return `OrganLink is a real-time coordination dashboard for hospital networks. It manages logistics, tracking, and mutual coordinator confirmation gates once an organ match is identified. Clinical matching is governed by regional transplant organizations.`;
+  }
+
+  // 6. Stats/Totals
+  if (q.includes('active') || q.includes('count') || q.includes('how many')) {
+    const active = coordinations.filter(c => c.status !== 'Delivered');
+    const critical = coordinations.filter(c => calculateUrgency(c) === 'Critical' && c.status !== 'Delivered');
+    return `There are currently ${active.length} active coordinations en-route, with ${critical.length} flagged at Critical urgency. A total of ${new Set(coordinations.flatMap(c => [c.donorHospital, c.recipientHospital])).size} hospital nodes are active in the network.`;
+  }
+
+  // Default Fallback
+  return `I am the OrganLink Assistant. You can ask me to "Check status of TX-901", "Show active critical cases", "Which cases are nearing expiry?", or ask about our matching heuristic formulas.`;
+};
+
+function ChatWidget({ coordinations, calculateUrgency, formatCountdown }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      sender: 'assistant',
+      text: 'Hello, I am the OrganLink Assistant. I can look up live case statuses, count active/critical matches, or explain our transport viability math. How can I assist you?',
+      timestamp: new Date()
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = React.useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  }, [messages, isTyping, isOpen]);
+
+  const handleSend = (text) => {
+    if (!text.trim()) return;
+
+    const userMsg = {
+      sender: 'user',
+      text: text,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+    setIsTyping(true);
+
+    setTimeout(() => {
+      const reply = generateLocalResponse(text, coordinations, calculateUrgency, formatCountdown);
+      const assistantMsg = {
+        sender: 'assistant',
+        text: reply,
+        timestamp: new Date()
+      };
+      setIsTyping(false);
+      setMessages(prev => [...prev, assistantMsg]);
+    }, 1000);
+  };
+
+  return (
+    <div className="chat-widget-container">
+      {!isOpen && (
+        <button className="chat-toggle-btn" onClick={() => setIsOpen(true)} aria-label="Open support chat">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+        </button>
+      )}
+
+      {isOpen && (
+        <div className="chat-window">
+          <div className="chat-header">
+            <div className="chat-header-info">
+              <div className="sync-dot animate-pulse-ring" style={{ backgroundColor: 'var(--status-green)', width: '8px', height: '8px' }}></div>
+              <div>
+                <div className="chat-header-title">OrganLink Assistant</div>
+                <div className="chat-header-subtitle">Clinical Logistics Agent</div>
+              </div>
+            </div>
+            <button className="chat-close-btn" onClick={() => setIsOpen(false)} aria-label="Close support chat">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="chat-messages">
+            {messages.map((m, idx) => (
+              <div key={idx} className={`chat-msg ${m.sender}`}>
+                {m.text}
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="chat-msg assistant">
+                <div className="typing-indicator-dots">
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                  <div className="typing-dot"></div>
+                </div>
+              </div>
+            )}
+
+            {messages.length === 1 && !isTyping && (
+              <div className="chat-quick-replies">
+                <button className="chat-quick-reply-btn" onClick={() => handleSend('Check status of TX-901')}>
+                  🔍 Check status of TX-901
+                </button>
+                <button className="chat-quick-reply-btn" onClick={() => handleSend('How is urgency score calculated?')}>
+                  📊 How is urgency score calculated?
+                </button>
+                <button className="chat-quick-reply-btn" onClick={() => handleSend('Show active critical cases')}>
+                  🚨 Show active critical cases
+                </button>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          <form className="chat-input-area" onSubmit={(e) => { e.preventDefault(); handleSend(input); }}>
+            <input 
+              type="text" 
+              className="chat-input" 
+              placeholder="Ask about active cases, viability limits..." 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+            />
+            <button type="submit" className="chat-send-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+
