@@ -1770,7 +1770,10 @@ function ChatWidget({ coordinations, calculateUrgency, formatCountdown }) {
     }
   }, [messages, isTyping, isOpen]);
 
-  const handleSend = (text) => {
+  const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const isRealAiEnabled = geminiKey && geminiKey !== '' && !geminiKey.startsWith('your_');
+
+  const handleSend = async (text) => {
     if (!text.trim()) return;
 
     const userMsg = {
@@ -1782,16 +1785,65 @@ function ChatWidget({ coordinations, calculateUrgency, formatCountdown }) {
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const reply = generateLocalResponse(text, coordinations, calculateUrgency, formatCountdown);
-      const assistantMsg = {
-        sender: 'assistant',
-        text: reply,
-        timestamp: new Date()
-      };
-      setIsTyping(false);
-      setMessages(prev => [...prev, assistantMsg]);
-    }, 1000);
+    if (isRealAiEnabled) {
+      try {
+        const systemInstruction = `You are the OrganLink Assistant, a helpful and professional clinical logistics agent for a hospital transplant network.
+Here is the current live network data in JSON format:
+${JSON.stringify(coordinations, null, 2)}
+
+Instructions:
+1. If the user asks about specific case IDs (like TX-901), search this JSON data and answer precisely.
+2. If the user asks about counts (like active cases, critical cases), compute it from this JSON data.
+3. If they ask general questions about OrganLink or medical logistics, answer clearly based on the app's scope (OrganLink manages transit tracking and mutual confirmation gates, NOT clinical matching).
+4. If they ask any other general questions outside OrganLink's scope, answer them politely and professionally using your general knowledge, but maintain your persona as the OrganLink Assistant.
+5. Keep all responses concise (2-4 sentences) and professional.`;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: `${systemInstruction}\n\nUser Question: ${text}` }]
+              }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I encountered an issue processing that query. Please try again.";
+        
+        setIsTyping(false);
+        setMessages(prev => [...prev, {
+          sender: 'assistant',
+          text: replyText,
+          timestamp: new Date()
+        }]);
+      } catch (err) {
+        console.error("Gemini API call failed, falling back to local engine:", err);
+        const replyText = generateLocalResponse(text, coordinations, calculateUrgency, formatCountdown);
+        setIsTyping(false);
+        setMessages(prev => [...prev, {
+          sender: 'assistant',
+          text: `[API Error] ${replyText}`,
+          timestamp: new Date()
+        }]);
+      }
+    } else {
+      setTimeout(() => {
+        const replyText = generateLocalResponse(text, coordinations, calculateUrgency, formatCountdown);
+        setIsTyping(false);
+        setMessages(prev => [...prev, {
+          sender: 'assistant',
+          text: replyText,
+          timestamp: new Date()
+        }]);
+      }, 1000);
+    }
   };
 
   return (
@@ -1808,10 +1860,10 @@ function ChatWidget({ coordinations, calculateUrgency, formatCountdown }) {
         <div className="chat-window">
           <div className="chat-header">
             <div className="chat-header-info">
-              <div className="sync-dot animate-pulse-ring" style={{ backgroundColor: 'var(--status-green)', width: '8px', height: '8px' }}></div>
+              <div className="sync-dot animate-pulse-ring" style={{ backgroundColor: isRealAiEnabled ? 'var(--status-green)' : 'var(--status-amber)', width: '8px', height: '8px' }}></div>
               <div>
                 <div className="chat-header-title">OrganLink Assistant</div>
-                <div className="chat-header-subtitle">Clinical Logistics Agent</div>
+                <div className="chat-header-subtitle">{isRealAiEnabled ? 'Gemini 2.5-Flash Active' : 'Offline Logistics Mode'}</div>
               </div>
             </div>
             <button className="chat-close-btn" onClick={() => setIsOpen(false)} aria-label="Close support chat">
@@ -1850,6 +1902,12 @@ function ChatWidget({ coordinations, calculateUrgency, formatCountdown }) {
                 <button className="chat-quick-reply-btn" onClick={() => handleSend('Show active critical cases')}>
                   🚨 Show active critical cases
                 </button>
+              </div>
+            )}
+
+            {!isRealAiEnabled && (
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center', backgroundColor: '#F1F5F9', padding: '8px', borderRadius: '8px', marginTop: 'auto', border: '1px solid var(--border-color)', lineHeight: '1.4' }}>
+                🔑 <strong>Conversational AI Mode:</strong> Add your <code>VITE_GEMINI_API_KEY</code> in the local <code>.env</code> file to enable chat on any custom topic!
               </div>
             )}
             <div ref={messagesEndRef} />
