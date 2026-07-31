@@ -120,3 +120,6 @@ To test the application's full end-to-end flow:
 * **Vertex AI Prediction Hook**: Found in [ranking.js](file:///c:/Projects/OrganLink/src/utils/ranking.js#L125-L131). The heuristics math can be swapped for a REST call to a tabular model endpoint predicting success probabilities based on transit stress.
 * **Google Maps Distance Matrix Hook**: Found in [ranking.js](file:///c:/Projects/OrganLink/src/utils/ranking.js#L54-L79). The Haversine fallback falls back to live distance matrix coordinates calculation if a maps key is loaded.
 * **Reactive Local DB Fallback**: Found in [firebase.js](file:///c:/Projects/OrganLink/src/firebase.js). Intercepts all Firestore and Authentication methods and runs them reactively through a multi-tab storage bus.
+
+---
+*Created as part of the OrganLink real-time network.*
